@@ -1,5 +1,6 @@
 const router = require("koa-joi-router");
 const service = require("../services/cmsService");
+const jsonWriter = require("../utils/jsonwriter");
 
 const Joi = router.Joi;
 const resRouter = router();
@@ -90,7 +91,11 @@ const VERSIONS_VALIDATE = {
 };
 
 // 基本信息
-resRouter.get("/detail", VERSIONS_VALIDATE.detail, service.get);
+resRouter.get("/detail", VERSIONS_VALIDATE.detail, async (ctx) => {
+  const { id, db } = ctx.request.query;
+  const res = await service.get(id, db);
+  jsonWriter(ctx, res);
+});
 
 // resRouter.get('/list', VERSIONS_VALIDATE.list, service.list);
 // resRouter.get('/types', service.getTypes);
